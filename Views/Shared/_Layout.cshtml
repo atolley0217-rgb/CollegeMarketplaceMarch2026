@@ -3,37 +3,188 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title>@ViewBag.Title - The College Marketplace</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 </head>
 <body>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
-        <div class="container">
-            @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
-                    <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("About", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                </ul>
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-2 navbar navbar-dark bg-dark flex-column min-vh-100">
+                <div class="container">
+                    @Html.ActionLink("The College Marketplace", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                    <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
+                        <ul class="navbar-nav flex-grow-1">
+                            <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                            <li>@Html.ActionLink("Post a Listing", "NewListing", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                            <li>@Html.ActionLink("Your Listings & Orders", "ListingsAndOrders", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                            <li>@Html.ActionLink("Admin Portal", "AdminPortal", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <main class="col-md-10 p-0">
+
+                <div class="bg-light border-bottom px-4 py-2 d-flex justify-content-between align-items-center">
+                    <h1 class="m-0">@ViewBag.Title</h1>
+
+                    <div>
+                        <button class="btn btn-outline-secondary btn-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target="#loginModal">
+                            Log In
+                        </button>
+
+                        <button class="btn btn-outline-secondary btn-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target="#signupModal">
+                            Sign Up
+                        </button>
+
+                        <button class="btn btn-primary btn-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target="#userModal">
+                            User
+                        </button>
+                    </div>
+                </div>
+
+                <div class="p-4">
+                    @RenderBody()
+                </div>
+
+                <hr />
+
+                <footer>
+                    <p>&copy; @DateTime.Now.Year - The College Marketplace</p>
+                </footer>
+
+            </main>
+
+            @Scripts.Render("~/bundles/jquery")
+            @Scripts.Render("~/bundles/bootstrap")
+            @RenderSection("scripts", required: false)
+        </div>
+    </div>
+    <div class="modal fade" id="loginModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Log In</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label>Email</label>
+                        <input class="form-control" type="email">
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Password</label>
+                        <input class="form-control" type="password">
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <div class="row w-100">
+                        <div class="col-6">
+                            <button class="btn btn-secondary w-100" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                        <div class="col-6">
+                            <button class="btn btn-primary w-100">Log In</button>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
-    </nav>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
     </div>
+    <div class="modal fade" id="signupModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
+                <div class="modal-header">
+                    <h5 class="modal-title">Sign Up</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label>First Name</label>
+                        <input class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Last Name</label>
+                        <input class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Email</label>
+                        <input class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Phone #</label>
+                        <input class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Password</label>
+                        <input class="form-control" type="password">
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <div class="row w-100">
+                        <div class="col-6">
+                            <button class="btn btn-secondary w-100" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                        <div class="col-6">
+                            <button class="btn btn-primary w-100">Submit</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="userModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">User Info</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <p><strong>Name:</strong> John Smith</p>
+                    <p><strong>Email:</strong> john@email.com</p>
+                    <p><strong>Phone:</strong> 330-555-1234</p>
+
+                </div>
+
+                <div class="modal-footer">
+                    <div class="row w-100">
+                        <div class="col-6">
+                            <button class="btn btn-secondary w-100" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                        <div class="col-6">
+                            <button class="btn btn-primary w-100">@Html.ActionLink("Admin Portal", "AdminPortal", "Home", new { area = "" }, new { @class = "nav-link" })</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
 </body>
 </html>

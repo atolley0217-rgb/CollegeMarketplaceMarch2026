@@ -16,16 +16,34 @@ namespace CollegeMarketplaceMarch2026.Controllers
             return View();
         }
 
-        public ActionResult About()
+        public ActionResult ListingsAndOrders()
         {
-            ViewBag.Message = "Your application description page.";
+            ViewBag.Message = "Your application listings and orders page.";
 
             return View();
         }
 
-        public ActionResult Contact()
+        public ActionResult NewListing()
         {
-            ViewBag.Message = "Your contact page.";
+            ViewBag.Message = "Your new listing page.";
+
+            return View();
+        }
+        public ActionResult EditListing()
+        {
+            ViewBag.Message = "Your new listing page.";
+
+            return View();
+        }
+        public ActionResult ViewListing()
+        {
+            ViewBag.Message = "Your new listing page.";
+
+            return View();
+        }
+        public ActionResult AdminPortal()
+        {
+            ViewBag.Message = "Your application admin portal page.";
 
             return View();
         }

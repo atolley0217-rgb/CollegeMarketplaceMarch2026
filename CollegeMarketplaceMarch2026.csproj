@@ -174,9 +174,12 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
+    <Content Include="Views\Home\AdminPortal.cshtml" />
+    <Content Include="Views\Home\NewListing.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Home\ListingsAndOrders.cshtml" />
+    <Content Include="Views\Home\EditListing.cshtml" />
+    <Content Include="Views\Home\ViewListing.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
