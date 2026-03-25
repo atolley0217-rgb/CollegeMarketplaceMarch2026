@@ -6,84 +6,88 @@ using CollegeMarketplaceMarch2026.Models;   // adjust to your namespace
 
 namespace CollegeMarketplaceMarch2026.Services
 {
-
-}
-public class DatabaseServices
-{
-    private readonly string _connectionString;
-
-    public DatabaseServices()
+    public class DatabaseServices
     {
-        _connectionString = ConfigurationManager.ConnectionStrings["MarketplaceDB"].ConnectionString;
-    }
+        private readonly string _connectionString;
 
-    // ---------------------------
-    // Get All Users
-    // ---------------------------
-    public List<UserModel> GetAllUsers()
-    {
-        var users = new List<UserModel>();
-
-        using (SqlConnection conn = new SqlConnection(_connectionString))
+        public DatabaseServices()
         {
-            conn.Open();
-
-            string query = "SELECT UserID, FirstName, LastName, Email, PhoneNumber, Password FROM Users";
-
-            using (SqlCommand cmd = new SqlCommand(query, conn))
-            using (SqlDataReader reader = cmd.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    users.Add(new UserModel
-                    {
-                        UserID = reader.GetGuid(0),
-                        FirstName = reader.GetString(1),
-                        LastName = reader.GetString(2),
-                        Email = reader.GetString(3),
-                        PhoneNumber = reader.GetString(4),
-                        Password = reader.GetString(5)
-                    });
-                }
-            }
+            _connectionString = ConfigurationManager.ConnectionStrings["MarketplaceDB"].ConnectionString;
         }
 
-        return users;
-    }
-
-    // ---------------------------
-    // Get All Listings
-    // ---------------------------
-    public List<ListingModel> GetAllListings()
-    {
-        var listings = new List<ListingModel>();
-
-        using (SqlConnection conn = new SqlConnection(_connectionString))
+        #region Users
+        // ---------------------------
+        // Get All Users
+        // ---------------------------
+        public List<UserModel> GetAllUsers()
         {
-            conn.Open();
+            var users = new List<UserModel>();
 
-            string query = @"SELECT ListingID, UserID, ItemName, ItemDesc, ItemType, SellPrice, DateListed 
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+
+                string query = "SELECT UserID, FirstName, LastName, Email, PhoneNumber, Password FROM Users";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        users.Add(new UserModel
+                        {
+                            UserID = reader.GetGuid(0),
+                            FirstName = reader.GetString(1),
+                            LastName = reader.GetString(2),
+                            Email = reader.GetString(3),
+                            PhoneNumber = reader.GetString(4),
+                            Password = reader.GetString(5)
+                        });
+                    }
+                }
+            }
+
+            return users;
+        }
+
+        #endregion
+
+        #region Listings
+        // ---------------------------
+        // Get All Listings
+        // ---------------------------
+        public List<ListingModel> GetAllListings()
+        {
+            var listings = new List<ListingModel>();
+
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+
+                string query = @"SELECT ListingID, UserID, ItemName, ItemDesc, ItemType, SellPrice, DateListed 
                              FROM Listing";
 
-            using (SqlCommand cmd = new SqlCommand(query, conn))
-            using (SqlDataReader reader = cmd.ExecuteReader())
-            {
-                while (reader.Read())
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    listings.Add(new ListingModel
+                    while (reader.Read())
                     {
-                        ListingID = reader.GetGuid(0),
-                        UserID = reader.GetGuid(1),
-                        ItemName = reader.GetString(2),
-                        ItemDesc = reader.GetString(3),
-                        ItemType = reader.GetString(4),
-                        SellPrice = reader.GetDecimal(5),
-                        DateListed = reader.GetDateTime(6)
-                    });
+                        listings.Add(new ListingModel
+                        {
+                            ListingID = reader.GetGuid(0),
+                            UserID = reader.GetGuid(1),
+                            ItemName = reader.GetString(2),
+                            ItemDesc = reader.GetString(3),
+                            ItemType = reader.GetString(4),
+                            SellPrice = reader.GetDecimal(5),
+                            DateListed = reader.GetDateTime(6)
+                        });
+                    }
                 }
             }
-        }
 
-        return listings;
+            return listings;
+        }
+        #endregion
     }
 }
