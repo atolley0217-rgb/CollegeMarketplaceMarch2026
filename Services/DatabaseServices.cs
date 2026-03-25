@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 using CollegeMarketplaceMarch2026.Models;   // adjust to your namespace
 
 namespace CollegeMarketplaceMarch2026.Services
@@ -50,6 +51,41 @@ namespace CollegeMarketplaceMarch2026.Services
             return users;
         }
 
+        // ---------------------------
+        // Get User By ID
+        // ---------------------------
+        public UserModel GetUserById(Guid userId)
+        {
+            var user = new UserModel();
+
+            return user;
+        }
+
+        // ---------------------------
+        // Check for User by Email and Pass
+        // ---------------------------
+        public bool CheckLogin(string email, string pass)
+        {
+            bool validLogin = false;
+
+            return validLogin;
+        }
+
+        // ---------------------------
+        // Update User
+        // ---------------------------
+        public async Task UpdateUser(UserModel user)
+        {
+            //does not need to return value
+        }
+
+        // ---------------------------
+        // Delete User
+        // ---------------------------
+        public async Task DeleteUser(Guid userId)
+        {
+            //does not need to return value
+        }
         #endregion
 
         #region Listings
@@ -85,6 +121,36 @@ namespace CollegeMarketplaceMarch2026.Services
                     }
                 }
             }
+
+            return listings;
+        }
+
+        // ---------------------------
+        // Get Listing by Id
+        // ---------------------------
+        public ListingModel GetListingById(Guid listingId)
+        {
+            var listing = new ListingModel();
+
+            return listing;
+        }
+
+        // ---------------------------
+        // Get Listings by User ID
+        // ---------------------------
+        public List<ListingModel> GetListingsByUserId(Guid userID)
+        {
+            var listings = new List<ListingModel>();
+
+            return listings;
+        }
+
+        // ---------------------------
+        // Get Transaction Listings by User ID
+        // ---------------------------
+        public List<ListingModel> GetTransactionListingsByUserId(Guid userID)
+        {
+            var listings = new List<ListingModel>();
 
             return listings;
         }
