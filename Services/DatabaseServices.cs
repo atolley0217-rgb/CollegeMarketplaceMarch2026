@@ -154,6 +154,10 @@ namespace CollegeMarketplaceMarch2026.Services
 
             return listings;
         }
+        public async Task CreateListing(ListingModel listing)
+        {
+
+        }
         #endregion
     }
 }

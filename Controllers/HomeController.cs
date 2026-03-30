@@ -1,4 +1,5 @@
 ﻿using CollegeMarketplaceMarch2026.Models;
+using CollegeMarketplaceMarch2026.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,8 @@ namespace CollegeMarketplaceMarch2026.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly DatabaseServices _db = new DatabaseServices();
+
         public List<UserModel> Users = new List<UserModel>();
         public List<UserModel> Listings = new List<UserModel>();
         public List<UserModel> Orders = new List<UserModel>();
@@ -35,6 +38,21 @@ namespace CollegeMarketplaceMarch2026.Controllers
 
             return View();
         }
+
+        [HttpPost]
+        public ActionResult NewListing(ListingModel model, HttpPostedFileBase imageFile)
+        {
+            if (ModelState.IsValid)
+            {
+
+                _db.
+
+                return RedirectToAction("ListingsAndOrders");
+            }
+
+            return View(model);
+        }
+
         public ActionResult EditListing()
         {
             ViewBag.Message = "Your new listing page.";
