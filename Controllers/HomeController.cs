@@ -45,8 +45,6 @@ namespace CollegeMarketplaceMarch2026.Controllers
             if (ModelState.IsValid)
             {
 
-                _db.
-
                 return RedirectToAction("ListingsAndOrders");
             }
 

@@ -62,6 +62,14 @@ namespace CollegeMarketplaceMarch2026.Services
         }
 
         // ---------------------------
+        // Create New User
+        // ---------------------------
+        public async Task CreateUser(UserModel user)
+        {
+
+        }
+
+        // ---------------------------
         // Check for User by Email and Pass
         // ---------------------------
         public bool CheckLogin(string email, string pass)
@@ -154,6 +162,9 @@ namespace CollegeMarketplaceMarch2026.Services
 
             return listings;
         }
+        // ---------------------------
+        // Create New Transaction
+        // ---------------------------
         public async Task CreateListing(ListingModel listing)
         {
 
