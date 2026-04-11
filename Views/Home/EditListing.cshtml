@@ -1,7 +1,70 @@
-﻿
+﻿@model CollegeMarketplaceMarch2026.Models.ListingModel
 @{
-    ViewBag.Title = "EditListing";
+    ViewBag.Title = "Edit Listing";
 }
 
-<h2>EditListing</h2>
+<main>
+    <div class="container mt-4">
 
+        <h3 class="mb-4">Edit Listing</h3>
+
+        @using (Html.BeginForm("EditListing", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.HiddenFor(m => m.ListingID)
+
+            <div class="mb-3">
+                <label class="form-label">Listing Title</label>
+                @Html.TextBoxFor(m => m.ItemName, new { @class = "form-control" })
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Listing Price</label>
+                @Html.TextBoxFor(m => m.SellPrice, new { @class = "form-control", type = "number", step = "0.01" })
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Listing Description</label>
+                @Html.TextAreaFor(m => m.ItemDesc, new { @class = "form-control", rows = 4 })
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Category</label>
+                @Html.DropDownListFor(m => m.ItemType, new List<SelectListItem>
+                {
+                    new SelectListItem { Text = "Textbooks", Value = "Textbooks" },
+                    new SelectListItem { Text = "Merchandise", Value = "Merchandise" },
+                    new SelectListItem { Text = "Materials", Value = "Materials" }
+                }, new { @class = "form-select" })
+            </div>
+
+            <!-- Existing Images -->
+            if (Model.ListingImages != null && Model.ListingImages.Any())
+            {
+                <div class="mb-3">
+                    <label class="form-label">Current Images</label>
+                    <div class="row">
+                        @foreach (var img in Model.ListingImages)
+                        {
+                            var base64 = Convert.ToBase64String(img);
+                            var imgSrc = String.Format("data:image/png;base64,{0}", base64);
+
+                            <div class="col-md-3 mb-2">
+                                <img src="@imgSrc" class="img-fluid rounded" />
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+            <!-- Upload New Images -->
+            <div class="mb-3">
+                <label class="form-label">Add More Images</label>
+                <input type="file" name="ListingImages" class="form-control" multiple />
+            </div>
+
+            <button class="btn btn-success">Save Changes</button>
+            @Html.ActionLink("Cancel", "Details", new { id = Model.ListingID }, new { @class = "btn btn-secondary ms-2" })
+        }
+
+    </div>
+</main>

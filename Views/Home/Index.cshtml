@@ -1,25 +1,46 @@
-﻿@{
+﻿@model IEnumerable<CollegeMarketplaceMarch2026.Models.ListingModel>
+@{
     ViewBag.Title = "Home Page";
 }
 
 <main>
     <div class="container mt-4">
         <div class="row">
-            <div class="col-md-3 mb-4">
-                <div class="card h-100 p-3">
-                    <div class="card-body">
-                        <h5 class="card-title">Calculus Textbook</h5>
-                    </div>
 
-                    <img src="https://picsum.photos/300/200"
-                         class="card-img-top"
-                         alt="Listing Image">
+            @foreach (var item in Model)
+            {
+                var imgSrc = "";
 
-                    <div class="card-body">
-                        <p class="card-text">$45.00</p>
-                    </div>
+                if (item.ListingImages != null && item.ListingImages.Any())
+                {
+                    var base64 = Convert.ToBase64String(item.ListingImages.First());
+                    imgSrc = $"data:image/png;base64,{base64}";
+                }
+                else
+                {
+                    imgSrc = "https://picsum.photos/300/200";
+                }
+
+                <div class="col-md-3 mb-4">
+                    <a href="@Url.Action("Details", "Home", new { id = item.ListingID })" style="text-decoration:none; color:inherit;">
+
+                        <div class="card h-100 p-3 shadow-sm">
+
+                            <img src="@imgSrc"
+                                 class="card-img-top"
+                                 alt="Listing Image">
+
+                            <div class="card-body">
+                                <h5 class="card-title">@item.ItemName</h5>
+                                <p class="card-text">$@item.SellPrice</p>
+                            </div>
+
+                        </div>
+
+                    </a>
                 </div>
-            </div>
+            }
+
         </div>
     </div>
 </main>
