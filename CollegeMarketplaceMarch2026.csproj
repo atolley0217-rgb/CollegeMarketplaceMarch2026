@@ -130,10 +130,6 @@
     <Compile Include="Services\DatabaseServices.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\MarketPlaceDataBase.mdf" />
-    <Content Include="App_Data\MarketPlaceDataBase_log.ldf">
-      <DependentUpon>MarketPlaceDataBase.mdf</DependentUpon>
-    </Content>
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-grid.rtl.css" />
@@ -188,7 +184,9 @@
     <Content Include="Views\Home\EditListing.cshtml" />
     <Content Include="Views\Home\ViewListing.cshtml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
     <Content Include="Content\bootstrap.rtl.css.map" />

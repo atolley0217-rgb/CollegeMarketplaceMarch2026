@@ -13,7 +13,7 @@ namespace CollegeMarketplaceMarch2026.Services
 
         public DatabaseServices()
         {
-            _connectionString = ConfigurationManager.ConnectionStrings["MarketplaceDB"].ConnectionString;
+            _connectionString = ConfigurationManager.ConnectionStrings["MarketPlaceDataBase"].ConnectionString;
         }
 
         #region Users
