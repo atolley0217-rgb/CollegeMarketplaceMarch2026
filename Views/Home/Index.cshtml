@@ -13,8 +13,13 @@
 
                 if (item.ListingImages != null && item.ListingImages.Any())
                 {
-                    var base64 = Convert.ToBase64String(item.ListingImages.First());
-                    imgSrc = $"data:image/png;base64,{base64}";
+                    var firstImage = item.ListingImages.FirstOrDefault();
+
+                    if (firstImage != null)
+                    {
+                        var base64 = Convert.ToBase64String(firstImage.ImageData);
+                        imgSrc = $"data:{firstImage.ContentType};base64,{base64}";
+                    }
                 }
                 else
                 {
@@ -22,7 +27,7 @@
                 }
 
                 <div class="col-md-3 mb-4">
-                    <a href="@Url.Action("Details", "Home", new { id = item.ListingID })" style="text-decoration:none; color:inherit;">
+                    <a href="@Url.Action("ViewListing", "Home", new { id = item.ListingID })" style="text-decoration:none; color:inherit;">
 
                         <div class="card h-100 p-3 shadow-sm">
 

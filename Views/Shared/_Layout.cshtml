@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var user = Session["User"] as CollegeMarketplaceMarch2026.Models.UserModel;
+}
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -16,9 +19,15 @@
                     <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
                         <ul class="navbar-nav flex-grow-1">
                             <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                            <li>@Html.ActionLink("Post a Listing", "NewListing", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                            <li>@Html.ActionLink("Your Listings & Orders", "ListingsAndOrders", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                            <li>@Html.ActionLink("Admin Portal", "AdminPortal", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                            @if (user != null)
+                            {
+                                <li>@Html.ActionLink("Post a Listing", "NewListing", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                                <li>@Html.ActionLink("Your Listings & Orders", "ListingsAndOrders", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                                if (user?.IsAdmin == true)
+                                {
+                                    <li>@Html.ActionLink("Admin Portal", "AdminPortal", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                                }
+                            }
                         </ul>
                     </div>
                 </div>
@@ -29,23 +38,28 @@
                     <h1 class="m-0">@ViewBag.Title</h1>
 
                     <div>
-                        <button class="btn btn-outline-secondary btn-sm"
-                                data-bs-toggle="modal"
-                                data-bs-target="#loginModal">
-                            Log In
-                        </button>
+                        @if (user == null)
+                        {
+                            <button class="btn btn-outline-secondary btn-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#loginModal">
+                                Log In
+                            </button>
 
-                        <button class="btn btn-outline-secondary btn-sm"
-                                data-bs-toggle="modal"
-                                data-bs-target="#signupModal">
-                            Sign Up
-                        </button>
-
-                        <button class="btn btn-primary btn-sm"
-                                data-bs-toggle="modal"
-                                data-bs-target="#userModal">
-                            User
-                        </button>
+                            <button class="btn btn-outline-secondary btn-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#signupModal">
+                                Sign Up
+                            </button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-primary btn-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#userModal">
+                                User
+                            </button>
+                        }
                     </div>
                 </div>
 
@@ -66,125 +80,170 @@
             @RenderSection("scripts", required: false)
         </div>
     </div>
-    <div class="modal fade" id="loginModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
 
-                <div class="modal-header">
-                    <h5 class="modal-title">Log In</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
+    @if (user == null)
+    {
+        <div class="modal fade" id="loginModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
 
-                <div class="modal-body">
-
-                    <div class="mb-3">
-                        <label>Email</label>
-                        <input class="form-control" type="email">
-                    </div>
-
-                    <div class="mb-3">
-                        <label>Password</label>
-                        <input class="form-control" type="password">
-                    </div>
-
-                </div>
-
-                <div class="modal-footer">
-                    <div class="row w-100">
-                        <div class="col-6">
-                            <button class="btn btn-secondary w-100" data-bs-dismiss="modal">Cancel</button>
+                    @using (Html.BeginForm("LogIn", "Home", FormMethod.Post))
+                    {
+                        <div class="modal-header">
+                            <h5 class="modal-title">Log In</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
-                        <div class="col-6">
-                            <button class="btn btn-primary w-100">Log In</button>
-                        </div>
-                    </div>
-                </div>
 
+                        <div class="modal-body">
+
+                            <div class="mb-3">
+                                <label>Email</label>
+                                <input name="Email" type="email" class="form-control" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label>Password</label>
+                                <input name="Password" type="password" class="form-control" />
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <div class="row w-100">
+                                <div class="col-6">
+                                    <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal">Cancel</button>
+                                </div>
+                                <div class="col-6">
+                                    <button type="submit" class="btn btn-primary w-100">Log In</button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                </div>
             </div>
         </div>
-    </div>
-    <div class="modal fade" id="signupModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
 
-                <div class="modal-header">
-                    <h5 class="modal-title">Sign Up</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
+        <div class="modal fade" id="signupModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
 
-                <div class="modal-body">
-
-                    <div class="mb-3">
-                        <label>First Name</label>
-                        <input class="form-control">
-                    </div>
-
-                    <div class="mb-3">
-                        <label>Last Name</label>
-                        <input class="form-control">
-                    </div>
-
-                    <div class="mb-3">
-                        <label>Email</label>
-                        <input class="form-control">
-                    </div>
-
-                    <div class="mb-3">
-                        <label>Phone #</label>
-                        <input class="form-control">
-                    </div>
-
-                    <div class="mb-3">
-                        <label>Password</label>
-                        <input class="form-control" type="password">
-                    </div>
-
-                </div>
-
-                <div class="modal-footer">
-                    <div class="row w-100">
-                        <div class="col-6">
-                            <button class="btn btn-secondary w-100" data-bs-dismiss="modal">Cancel</button>
+                    @using (Html.BeginForm("SignUp", "Home", FormMethod.Post))
+                    {
+                        <div class="modal-header">
+                            <h5 class="modal-title">Sign Up</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
-                        <div class="col-6">
-                            <button class="btn btn-primary w-100">Submit</button>
-                        </div>
-                    </div>
-                </div>
 
+                        <div class="modal-body">
+
+                            <div class="mb-3">
+                                <label>First Name</label>
+                                <input name="FirstName" class="form-control" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label>Last Name</label>
+                                <input name="LastName" class="form-control" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label>Email</label>
+                                <input name="Email" type="email" class="form-control" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label>Phone #</label>
+                                <input name="PhoneNumber" class="form-control" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label>Password</label>
+                                <input name="Password" type="password" class="form-control" />
+                            </div>
+
+                        </div>
+
+                        <div class="modal-footer">
+                            <div class="row w-100">
+                                <div class="col-6">
+                                    <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal">Cancel</button>
+                                </div>
+                                <div class="col-6">
+                                    <button type="submit" class="btn btn-primary w-100">Submit</button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                </div>
             </div>
         </div>
-    </div>
-    <div class="modal fade" id="userModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
+    }
+    else
+    {
+        <div class="modal fade" id="userModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
 
-                <div class="modal-header">
-                    <h5 class="modal-title">User Info</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
+                    <div class="modal-header">
+                        <h5 class="modal-title">User Info</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
 
-                <div class="modal-body">
+                    <div class="modal-body">
 
-                    <p><strong>Name:</strong> John Smith</p>
-                    <p><strong>Email:</strong> john@email.com</p>
-                    <p><strong>Phone:</strong> 330-555-1234</p>
+                        <p><strong>Name:</strong> @user.FirstName @user.LastName</p>
+                        <p><strong>Email:</strong> @user.Email</p>
+                        <p><strong>Phone:</strong> @user.PhoneNumber</p>
 
-                </div>
+                    </div>
 
-                <div class="modal-footer">
-                    <div class="row w-100">
-                        <div class="col-6">
-                            <button class="btn btn-secondary w-100" data-bs-dismiss="modal">Cancel</button>
-                        </div>
-                        <div class="col-6">
-                            <button class="btn btn-primary w-100">@Html.ActionLink("Admin Portal", "AdminPortal", "Home", new { area = "" }, new { @class = "nav-link" })</button>
+                    <div class="modal-footer">
+                        <div class="row w-100">
+                            <div class="col-6">
+                                <button class="btn btn-secondary w-100" data-bs-dismiss="modal">Cancel</button>
+                            </div>
+                            @if (user.IsAdmin == true)
+                            {
+                                <div class="col-6">
+                                    <button class="btn btn-primary w-100">@Html.ActionLink("Admin Portal", "AdminPortal", "Home", new { area = "" }, new { @class = "nav-link" })</button>
+                                </div>
+                            }
                         </div>
                     </div>
-                </div>
 
+                </div>
             </div>
         </div>
+    }
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="toast text-bg-danger show" role="alert">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        @TempData["ErrorMessage"]
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                            data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+        }
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="toast text-bg-success show" role="alert">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        @TempData["SuccessMessage"]
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                            data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+        }
+
     </div>
 </body>
 </html>

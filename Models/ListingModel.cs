@@ -15,6 +15,6 @@ namespace CollegeMarketplaceMarch2026.Models
         public string ItemType { get; set; }
         public decimal SellPrice { get; set; }
         public DateTime DateListed { get; set; }
-        public List<byte[]> ListingImages { get; set; }
+        public List<ListingImage> ListingImages { get; set; } = new List<ListingImage>();
     }
 }

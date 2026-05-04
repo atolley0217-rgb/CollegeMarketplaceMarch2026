@@ -122,6 +122,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\ListingImage.cs" />
     <Compile Include="Models\ListingModel.cs" />
     <Compile Include="Models\ListingsAndOrdersViewModel.cs" />
     <Compile Include="Models\TransactionModel.cs" />
@@ -130,6 +131,10 @@
     <Compile Include="Services\DatabaseServices.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\CollegeMarketplaceDB.mdf" />
+    <Content Include="App_Data\CollegeMarketplaceDB_log.ldf">
+      <DependentUpon>CollegeMarketplaceDB.mdf</DependentUpon>
+    </Content>
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-grid.rtl.css" />
@@ -184,9 +189,7 @@
     <Content Include="Views\Home\EditListing.cshtml" />
     <Content Include="Views\Home\ViewListing.cshtml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
     <Content Include="Content\bootstrap.rtl.css.map" />

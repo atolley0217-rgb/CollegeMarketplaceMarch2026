@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
+using System.Web.Mvc;
 using CollegeMarketplaceMarch2026.Models;   // adjust to your namespace
 
 namespace CollegeMarketplaceMarch2026.Services
@@ -13,7 +15,7 @@ namespace CollegeMarketplaceMarch2026.Services
 
         public DatabaseServices()
         {
-            _connectionString = ConfigurationManager.ConnectionStrings["MarketPlaceDataBase"].ConnectionString;
+            _connectionString = ConfigurationManager.ConnectionStrings["CollegeMarketplaceDB"].ConnectionString;
         }
 
         #region Users
@@ -28,7 +30,7 @@ namespace CollegeMarketplaceMarch2026.Services
             {
                 conn.Open();
 
-                string query = "SELECT UserID, FirstName, LastName, Email, PhoneNumber, Password FROM Users";
+                string query = "SELECT UserID, FirstName, LastName, Email, PhoneNumber, Password, IsAdmin FROM Users";
 
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 using (SqlDataReader reader = cmd.ExecuteReader())
@@ -42,7 +44,8 @@ namespace CollegeMarketplaceMarch2026.Services
                             LastName = reader.GetString(2),
                             Email = reader.GetString(3),
                             PhoneNumber = reader.GetString(4),
-                            Password = reader.GetString(5)
+                            Password = reader.GetString(5),
+                            IsAdmin = reader.GetBoolean(6)
                         });
                     }
                 }
@@ -81,7 +84,8 @@ namespace CollegeMarketplaceMarch2026.Services
                                 LastName = reader.GetString(2),
                                 Email = reader.GetString(3),
                                 PhoneNumber = reader.GetString(4),
-                                Password = reader.GetString(5)
+                                Password = reader.GetString(5),
+                                IsAdmin = reader.GetBoolean(6)
                             };
                         }
                     }
@@ -99,18 +103,18 @@ namespace CollegeMarketplaceMarch2026.Services
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 await conn.OpenAsync();
-
-                string query = @"INSERT INTO Users (UserID, FirstName, LastName, Email, PhoneNumber, Password)
-                         VALUES (@UserID, @FirstName, @LastName, @Email, @PhoneNumber, @Password)";
+                string query = @"INSERT INTO Users (UserID, FirstName, LastName, Email, PhoneNumber, Password, IsAdmin)
+                         VALUES (@UserID, @FirstName, @LastName, @Email, @PhoneNumber, @Password, @IsAdmin)";
 
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@UserID", user.UserID);
-                    cmd.Parameters.AddWithValue("@FirstName", user.FirstName);
-                    cmd.Parameters.AddWithValue("@LastName", user.LastName);
-                    cmd.Parameters.AddWithValue("@Email", user.Email);
-                    cmd.Parameters.AddWithValue("@PhoneNumber", user.PhoneNumber);
-                    cmd.Parameters.AddWithValue("@Password", user.Password);
+                    cmd.Parameters.Add("@UserID", SqlDbType.UniqueIdentifier).Value = Guid.NewGuid();
+                    cmd.Parameters.Add("@FirstName", SqlDbType.VarChar, 50).Value = user.FirstName;
+                    cmd.Parameters.Add("@LastName", SqlDbType.VarChar, 50).Value = user.LastName;
+                    cmd.Parameters.Add("@Email", SqlDbType.VarChar, 100).Value = user.Email;
+                    cmd.Parameters.Add("@PhoneNumber", SqlDbType.VarChar, 20).Value = user.PhoneNumber;
+                    cmd.Parameters.Add("@Password", SqlDbType.VarChar, 255).Value = user.Password;
+                    cmd.Parameters.Add("@IsAdmin", SqlDbType.Bit).Value = false;
 
                     await cmd.ExecuteNonQueryAsync();
                 }
@@ -120,15 +124,13 @@ namespace CollegeMarketplaceMarch2026.Services
         // ---------------------------
         // Check for User by Email and Pass
         // ---------------------------
-        public bool CheckLogin(string email, string pass)
+        public UserModel GetUserByEmailAndPassword(string email, string pass)
         {
-            bool validLogin = false;
-
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
 
-                string query = @"SELECT COUNT(*) FROM Users
+                string query = @"SELECT * FROM Users
                          WHERE Email = @Email AND Password = @Password";
 
                 using (SqlCommand cmd = new SqlCommand(query, conn))
@@ -136,12 +138,26 @@ namespace CollegeMarketplaceMarch2026.Services
                     cmd.Parameters.AddWithValue("@Email", email);
                     cmd.Parameters.AddWithValue("@Password", pass);
 
-                    int count = (int)cmd.ExecuteScalar();
-                    validLogin = count > 0;
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return new UserModel
+                            {
+                                UserID = (Guid)reader["UserID"],
+                                FirstName = reader["FirstName"].ToString(),
+                                LastName = reader["LastName"].ToString(),
+                                Email = reader["Email"].ToString(),
+                                PhoneNumber = reader["PhoneNumber"]?.ToString(),
+                                Password = reader["Password"].ToString(),
+                                IsAdmin = (bool)reader["IsAdmin"]
+                            };
+                        }
+                    }
                 }
             }
 
-            return validLogin;
+            return null;
         }
 
         // ---------------------------
@@ -158,7 +174,8 @@ namespace CollegeMarketplaceMarch2026.Services
                              LastName = @LastName,
                              Email = @Email,
                              PhoneNumber = @PhoneNumber,
-                             Password = @Password
+                             Password = @Password,
+                             IsAdmin = @IsAdmin
                          WHERE UserID = @UserID";
 
                 using (SqlCommand cmd = new SqlCommand(query, conn))
@@ -169,6 +186,7 @@ namespace CollegeMarketplaceMarch2026.Services
                     cmd.Parameters.AddWithValue("@Email", user.Email);
                     cmd.Parameters.AddWithValue("@PhoneNumber", user.PhoneNumber);
                     cmd.Parameters.AddWithValue("@Password", user.Password);
+                    cmd.Parameters.AddWithValue("@IsAdmin", user.IsAdmin);
 
                     await cmd.ExecuteNonQueryAsync();
                 }
@@ -217,13 +235,13 @@ namespace CollegeMarketplaceMarch2026.Services
                     {
                         listings.Add(new ListingModel
                         {
-                            ListingID = reader.GetGuid(0),
-                            UserID = reader.GetGuid(1),
-                            ItemName = reader.GetString(2),
-                            ItemDesc = reader.GetString(3),
-                            ItemType = reader.GetString(4),
-                            SellPrice = reader.GetDecimal(5),
-                            DateListed = reader.GetDateTime(6)
+                            ListingID = (Guid)reader["ListingID"],
+                            UserID = (Guid)reader["UserID"],
+                            ItemName = reader["ItemName"]?.ToString(),
+                            ItemDesc = reader["ItemDesc"]?.ToString(),
+                            ItemType = reader["ItemType"]?.ToString(),
+                            SellPrice = Convert.ToDecimal(reader["SellPrice"]),
+                            DateListed = Convert.ToDateTime(reader["DateListed"])
                         });
                     }
                 }
@@ -257,13 +275,13 @@ namespace CollegeMarketplaceMarch2026.Services
                         {
                             listing = new ListingModel
                             {
-                                ListingID = reader.GetGuid(0),
-                                UserID = reader.GetGuid(1),
-                                ItemName = reader.GetString(2),
-                                ItemDesc = reader.GetString(3),
-                                ItemType = reader.GetString(4),
-                                SellPrice = reader.GetDecimal(5),
-                                DateListed = reader.GetDateTime(6)
+                                ListingID = (Guid)reader["ListingID"],
+                                UserID = (Guid)reader["UserID"],
+                                ItemName = reader["ItemName"]?.ToString(),
+                                ItemDesc = reader["ItemDesc"]?.ToString(),
+                                ItemType = reader["ItemType"]?.ToString(),
+                                SellPrice = Convert.ToDecimal(reader["SellPrice"]),
+                                DateListed = Convert.ToDateTime(reader["DateListed"])
                             };
                         }
                     }
@@ -298,13 +316,13 @@ namespace CollegeMarketplaceMarch2026.Services
                         {
                             listings.Add(new ListingModel
                             {
-                                ListingID = reader.GetGuid(0),
-                                UserID = reader.GetGuid(1),
-                                ItemName = reader.GetString(2),
-                                ItemDesc = reader.GetString(3),
-                                ItemType = reader.GetString(4),
-                                SellPrice = reader.GetDecimal(5),
-                                DateListed = reader.GetDateTime(6)
+                                ListingID = (Guid)reader["ListingID"],
+                                UserID = (Guid)reader["UserID"],
+                                ItemName = reader["ItemName"]?.ToString(),
+                                ItemDesc = reader["ItemDesc"]?.ToString(),
+                                ItemType = reader["ItemType"]?.ToString(),
+                                SellPrice = Convert.ToDecimal(reader["SellPrice"]),
+                                DateListed = Convert.ToDateTime(reader["DateListed"])
                             });
                         }
                     }
@@ -325,11 +343,10 @@ namespace CollegeMarketplaceMarch2026.Services
             {
                 conn.Open();
 
-                string query = @"
-            SELECT L.ListingID, L.UserID, L.ItemName, L.ItemDesc, L.ItemType, L.SellPrice, L.DateListed
-            FROM Transactions T
-            INNER JOIN Listing L ON T.ListingID = L.ListingID
-            WHERE T.UserID = @UserID";
+                string query = @"SELECT L.ListingID, L.UserID, L.ItemName, L.ItemDesc, L.ItemType, L.SellPrice, L.DateListed
+                                 FROM Transactions T
+                                 INNER JOIN Listing L ON T.ListingID = L.ListingID
+                                 WHERE T.UserID = @UserID";
 
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
@@ -341,13 +358,13 @@ namespace CollegeMarketplaceMarch2026.Services
                         {
                             listings.Add(new ListingModel
                             {
-                                ListingID = reader.GetGuid(0),
-                                UserID = reader.GetGuid(1),
-                                ItemName = reader.GetString(2),
-                                ItemDesc = reader.GetString(3),
-                                ItemType = reader.GetString(4),
-                                SellPrice = reader.GetDecimal(5),
-                                DateListed = reader.GetDateTime(6)
+                                ListingID = (Guid)reader["ListingID"],
+                                UserID = (Guid)reader["UserID"],
+                                ItemName = reader["ItemName"]?.ToString(),
+                                ItemDesc = reader["ItemDesc"]?.ToString(),
+                                ItemType = reader["ItemType"]?.ToString(),
+                                SellPrice = Convert.ToDecimal(reader["SellPrice"]),
+                                DateListed = Convert.ToDateTime(reader["DateListed"])
                             });
                         }
                     }
@@ -370,13 +387,58 @@ namespace CollegeMarketplaceMarch2026.Services
 
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@ListingID", listing.ListingID);
+                    cmd.Parameters.AddWithValue("@ListingID", Guid.NewGuid());
                     cmd.Parameters.AddWithValue("@UserID", listing.UserID);
                     cmd.Parameters.AddWithValue("@ItemName", listing.ItemName);
                     cmd.Parameters.AddWithValue("@ItemDesc", listing.ItemDesc);
                     cmd.Parameters.AddWithValue("@ItemType", listing.ItemType);
                     cmd.Parameters.AddWithValue("@SellPrice", listing.SellPrice);
-                    cmd.Parameters.AddWithValue("@DateListed", listing.DateListed);
+                    cmd.Parameters.AddWithValue("@DateListed", DateTime.Now);
+
+                    await cmd.ExecuteNonQueryAsync();
+                }
+            }
+        }
+        public async Task UpdateListing(ListingModel listing)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                await conn.OpenAsync();
+
+                string query = @"UPDATE Listing SET ItemName = @ItemName, ItemDesc = @ItemDesc, 
+                                        ItemType = @ItemType, SellPrice = @SellPrice 
+                                        WHERE ListingId = @ListingID";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@ListingID", listing.ListingID);
+                    cmd.Parameters.AddWithValue("@ItemName", listing.ItemName);
+                    cmd.Parameters.AddWithValue("@ItemDesc", listing.ItemDesc);
+                    cmd.Parameters.AddWithValue("@ItemType", listing.ItemType);
+                    cmd.Parameters.AddWithValue("@SellPrice", listing.SellPrice);
+
+                    await cmd.ExecuteNonQueryAsync();
+                }
+            }
+        }
+        #endregion
+
+        #region Transactions
+        public async Task CreateTransaction(Guid listingId, Guid userId)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                await conn.OpenAsync();
+
+                string query = @"INSERT INTO Transactions (TransactionID, UserId, ListingId, TransactionDate)
+                         VALUES (@TransactionID, @UserId, @ListingId, @TransactionDate)";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@TransactionID", Guid.NewGuid());
+                    cmd.Parameters.AddWithValue("@UserID", userId);
+                    cmd.Parameters.AddWithValue("@ListingId", listingId);
+                    cmd.Parameters.AddWithValue("@TransactionDate", DateTime.Now);
 
                     await cmd.ExecuteNonQueryAsync();
                 }

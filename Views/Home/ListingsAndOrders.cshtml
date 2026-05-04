@@ -1,5 +1,7 @@
-﻿
+﻿@model CollegeMarketplaceMarch2026.Models.ListingsAndOrdersViewModel
 @{
+    var listings = Model.Listings;
+    var orders = Model.Orders;
     ViewBag.Title = "Your Listings & Orders";
 }
 
@@ -7,81 +9,44 @@
     <h2>Your Listings</h2>
     <div class="container mt-4">
         <div class="d-flex overflow-auto pb-3">
-            <div class="col-md-3 mb-4">
-                <div class="card h-100 p-3">
-                    <div class="card-body">
-                        <h5 class="card-title">Calculus Textbook</h5>
-                    </div>
+            @foreach (var item in listings)
+            {
+                var imgSrc = "";
 
-                    <img src="https://picsum.photos/300/200"
-                         class="card-img-top"
-                         alt="Listing Image">
+                if (item.ListingImages != null && item.ListingImages.Any())
+                {
+                    var firstImage = item.ListingImages.FirstOrDefault();
 
-                    <div class="card-body">
-                        <p class="card-text">$45.00</p>
-                    </div>
+                    if (firstImage != null)
+                    {
+                        var base64 = Convert.ToBase64String(firstImage.ImageData);
+                        imgSrc = $"data:{firstImage.ContentType};base64,{base64}";
+                    }
+                }
+                else
+                {
+                    imgSrc = "https://picsum.photos/300/200";
+                }
+
+                <div class="col-md-3 mb-4">
+                    <a href="@Url.Action("EditListing", "Home", new { id = item.ListingID })" style="text-decoration:none; color:inherit;">
+
+                        <div class="card h-100 p-3 shadow-sm">
+
+                            <img src="@imgSrc"
+                                 class="card-img-top"
+                                 alt="Listing Image">
+
+                            <div class="card-body">
+                                <h5 class="card-title">@item.ItemName</h5>
+                                <p class="card-text">$@item.SellPrice</p>
+                            </div>
+
+                        </div>
+
+                    </a>
                 </div>
-            </div>
-            <div class="col-md-3 mb-4">
-                <div class="card h-100 p-3">
-                    <div class="card-body">
-                        <h5 class="card-title">Calculus Textbook</h5>
-                    </div>
-
-                    <img src="https://picsum.photos/300/200"
-                         class="card-img-top"
-                         alt="Listing Image">
-
-                    <div class="card-body">
-                        <p class="card-text">$45.00</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 mb-4">
-                <div class="card h-100 p-3">
-                    <div class="card-body">
-                        <h5 class="card-title">Calculus Textbook</h5>
-                    </div>
-
-                    <img src="https://picsum.photos/300/200"
-                         class="card-img-top"
-                         alt="Listing Image">
-
-                    <div class="card-body">
-                        <p class="card-text">$45.00</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 mb-4">
-                <div class="card h-100 p-3">
-                    <div class="card-body">
-                        <h5 class="card-title">Calculus Textbook</h5>
-                    </div>
-
-                    <img src="https://picsum.photos/300/200"
-                         class="card-img-top"
-                         alt="Listing Image">
-
-                    <div class="card-body">
-                        <p class="card-text">$45.00</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 mb-4">
-                <div class="card h-100 p-3">
-                    <div class="card-body">
-                        <h5 class="card-title">Calculus Textbook</h5>
-                    </div>
-
-                    <img src="https://picsum.photos/300/200"
-                         class="card-img-top"
-                         alt="Listing Image">
-
-                    <div class="card-body">
-                        <p class="card-text">$45.00</p>
-                    </div>
-                </div>
-            </div>
+            }
         </div>
     </div>
 
@@ -90,21 +55,44 @@
     <h2>Your Orders</h2>
     <div class="container mt-4">
         <div class="d-flex overflow-auto pb-3">
-            <div class="col-md-3 mb-4">
-                <div class="card h-100 p-3">
-                    <div class="card-body">
-                        <h5 class="card-title">Calculus Textbook</h5>
-                    </div>
+            @foreach (var item in orders)
+            {
+                var imgSrc = "";
 
-                    <img src="https://picsum.photos/300/200"
-                         class="card-img-top"
-                         alt="Listing Image">
+                if (item.ListingImages != null && item.ListingImages.Any())
+                {
+                    var firstImage = item.ListingImages.FirstOrDefault();
 
-                    <div class="card-body">
-                        <p class="card-text">$45.00</p>
-                    </div>
+                    if (firstImage != null)
+                    {
+                        var base64 = Convert.ToBase64String(firstImage.ImageData);
+                        imgSrc = $"data:{firstImage.ContentType};base64,{base64}";
+                    }
+                }
+                else
+                {
+                    imgSrc = "https://picsum.photos/300/200";
+                }
+
+                <div class="col-md-3 mb-4">
+                    <a href="@Url.Action("ViewListing", "Home", new { id = item.ListingID })" style="text-decoration:none; color:inherit;">
+
+                        <div class="card h-100 p-3 shadow-sm">
+
+                            <img src="@imgSrc"
+                                 class="card-img-top"
+                                 alt="Listing Image">
+
+                            <div class="card-body">
+                                <h5 class="card-title">@item.ItemName</h5>
+                                <p class="card-text">$@item.SellPrice</p>
+                            </div>
+
+                        </div>
+
+                    </a>
                 </div>
-            </div>
+            }
         </div>
     </div>
 </main>

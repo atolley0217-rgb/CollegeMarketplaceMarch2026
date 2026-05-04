@@ -45,8 +45,8 @@
                     <div class="row">
                         @foreach (var img in Model.ListingImages)
                         {
-                            var base64 = Convert.ToBase64String(img);
-                            var imgSrc = String.Format("data:image/png;base64,{0}", base64);
+                            var base64 = Convert.ToBase64String(img.ImageData);
+                            var imgSrc = $"data:{img.ContentType};base64,{base64}";
 
                             <div class="col-md-3 mb-2">
                                 <img src="@imgSrc" class="img-fluid rounded" />
@@ -62,8 +62,8 @@
                 <input type="file" name="ListingImages" class="form-control" multiple />
             </div>
 
-            <button class="btn btn-success">Save Changes</button>
-            @Html.ActionLink("Cancel", "Details", new { id = Model.ListingID }, new { @class = "btn btn-secondary ms-2" })
+            <button type="submit" class="btn btn-primary w-100">Save Changes</button>
+            @Html.ActionLink("Cancel", "Index", new { id = Model.ListingID }, new { @class = "btn btn-secondary ms-2" })
         }
 
     </div>
