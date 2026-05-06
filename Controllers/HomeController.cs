@@ -134,7 +134,7 @@ namespace CollegeMarketplaceMarch2026.Controllers
         }
 
         [HttpPost]
-        public ActionResult NewListing(ListingModel model, IEnumerable<HttpPostedFileBase> ListingImages)
+        public ActionResult NewListing(ListingModel model, IEnumerable<HttpPostedFileBase> UploadedImages)
         {
             if (ModelState.IsValid)
             {
@@ -143,13 +143,13 @@ namespace CollegeMarketplaceMarch2026.Controllers
                 model.UserID = user.UserID;
                 model.DateListed = DateTime.Now;
 
-                if (ListingImages != null)
+                if (UploadedImages != null)
                 {
                     model.ListingImages = new List<ListingImage>();
 
                     int order = 1;
 
-                    foreach (var file in ListingImages)
+                    foreach (var file in UploadedImages)
                     {
                         if (file != null && file.ContentLength > 0)
                         {

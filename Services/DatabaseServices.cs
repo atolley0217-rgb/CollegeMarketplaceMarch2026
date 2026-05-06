@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using CollegeMarketplaceMarch2026.Models;   // adjust to your namespace
@@ -377,7 +378,7 @@ namespace CollegeMarketplaceMarch2026.Services
 
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@ListingID", Guid.NewGuid());
+                    cmd.Parameters.AddWithValue("@ListingID", listing.ListingID);
                     cmd.Parameters.AddWithValue("@UserID", listing.UserID);
                     cmd.Parameters.AddWithValue("@ItemName", listing.ItemName);
                     cmd.Parameters.AddWithValue("@ItemDesc", listing.ItemDesc);
@@ -386,6 +387,32 @@ namespace CollegeMarketplaceMarch2026.Services
                     cmd.Parameters.AddWithValue("@DateListed", DateTime.Now);
 
                     await cmd.ExecuteNonQueryAsync();
+                }
+
+                foreach (var image in listing.ListingImages)
+                {
+                    string imageQuery = @"INSERT INTO ListingImages (ImageId, ListingId, Image, ContentType, ImageOrder)
+                                        VALUES(@ImageId, @ListingId, @Image, @ContentType, @ImageOrder)";
+
+                    SqlCommand imageCmd =
+                        new SqlCommand(imageQuery, conn);
+
+                    imageCmd.Parameters.AddWithValue("@ImageId",
+                        image.ImageId);
+
+                    imageCmd.Parameters.AddWithValue("@ListingId",
+                        image.ListingId);
+
+                    imageCmd.Parameters.AddWithValue("@Image",
+                        image.ImageData);
+
+                    imageCmd.Parameters.AddWithValue("@ContentType",
+                        image.ContentType);
+
+                    imageCmd.Parameters.AddWithValue("@ImageOrder",
+                        image.ImageOrder);
+
+                    imageCmd.ExecuteNonQuery();
                 }
             }
         }
