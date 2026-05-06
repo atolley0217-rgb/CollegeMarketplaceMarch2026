@@ -46,7 +46,6 @@ namespace CollegeMarketplaceMarch2026.Controllers
             if (ModelState.IsValid)
             {
                 model.UserID = Guid.NewGuid();
-                model.IsAdmin = false;
 
                 await _db.CreateUser(model);
 
