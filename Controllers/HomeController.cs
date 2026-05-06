@@ -30,9 +30,9 @@ namespace CollegeMarketplaceMarch2026.Controllers
         }
         public ActionResult AdminPortal()
         {
-            ViewBag.Message = "Your application admin portal page.";
+            Users = _db.GetAllUsers();
 
-            return View();
+            return View(Users);
         }
         #region User
 
@@ -74,6 +74,36 @@ namespace CollegeMarketplaceMarch2026.Controllers
                 }
             }
             return RedirectToAction("Index");
+        }
+        [HttpPost]
+        public async Task<ActionResult> DeleteUser(Guid id)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+
+                    await _db.DeleteUser(id);
+
+                    TempData["SuccessMessage"] = "User deleted successfully!";
+                }
+                catch (Exception ex)
+                {
+                    TempData["Error Message"] = ex.Message;
+                }
+            }
+            return RedirectToAction("AdminPortal");
+        }
+        [HttpPost]
+        public async Task<ActionResult> AdminPortal(Guid userId, bool isAdmin)
+        {
+            if (ModelState.IsValid)
+            {
+                _db.UpdateUser(userId, isAdmin);
+
+                TempData["SuccessMessage"] = "User updated successfully!";
+            }
+            return RedirectToAction("AdminPortal");
         }
         #endregion
 
@@ -198,6 +228,18 @@ namespace CollegeMarketplaceMarch2026.Controllers
             }
 
             return View(model);
+        }
+        [HttpPost]
+        public ActionResult DeleteListing(Guid id)
+        {
+            if (ModelState.IsValid)
+            {
+                _db.DeleteListing(id);
+
+                TempData["SuccessMessage"] = "Listing deleted successfully!";
+            }
+
+            return RedirectToAction("ListingsAndOrders");
         }
         public ActionResult ViewListing(Guid id)
         {

@@ -48,6 +48,13 @@
                     <button type="submit" class="btn btn-success">Purchase</button>
                 </form>
             }
+            else if (Model.UserID == user.UserID)
+            {
+                <form method="post" action="@Url.Action("DeleteListing", "Home")" class="d-inline">
+                    <input type="hidden" name="id" value="@Model.ListingID" />
+                    <button type="submit" class="btn btn-danger ">🗑</button>
+                </form>
+            }
 
             @Html.ActionLink("Back", "Index", null, new { @class = "btn btn-secondary ms-2" })
         </div>

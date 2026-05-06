@@ -163,30 +163,20 @@ namespace CollegeMarketplaceMarch2026.Services
         // ---------------------------
         // Update User
         // ---------------------------
-        public async Task UpdateUser(UserModel user)
+        public async Task UpdateUser(Guid userId, bool isAdmin)
         {
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 await conn.OpenAsync();
 
                 string query = @"UPDATE Users
-                         SET FirstName = @FirstName,
-                             LastName = @LastName,
-                             Email = @Email,
-                             PhoneNumber = @PhoneNumber,
-                             Password = @Password,
-                             IsAdmin = @IsAdmin
+                         SET IsAdmin = @IsAdmin
                          WHERE UserID = @UserID";
 
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@UserID", user.UserID);
-                    cmd.Parameters.AddWithValue("@FirstName", user.FirstName);
-                    cmd.Parameters.AddWithValue("@LastName", user.LastName);
-                    cmd.Parameters.AddWithValue("@Email", user.Email);
-                    cmd.Parameters.AddWithValue("@PhoneNumber", user.PhoneNumber);
-                    cmd.Parameters.AddWithValue("@Password", user.Password);
-                    cmd.Parameters.AddWithValue("@IsAdmin", user.IsAdmin);
+                    cmd.Parameters.AddWithValue("@UserID", userId);
+                    cmd.Parameters.AddWithValue("@IsAdmin", isAdmin);
 
                     await cmd.ExecuteNonQueryAsync();
                 }
@@ -417,6 +407,21 @@ namespace CollegeMarketplaceMarch2026.Services
                     cmd.Parameters.AddWithValue("@ItemType", listing.ItemType);
                     cmd.Parameters.AddWithValue("@SellPrice", listing.SellPrice);
 
+                    await cmd.ExecuteNonQueryAsync();
+                }
+            }
+        }
+        public async Task DeleteListing(Guid listingId)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                await conn.OpenAsync();
+
+                string query = @"DELETE FROM Listing WHERE ListingId = @ListingID";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@ListingID", listingId);
                     await cmd.ExecuteNonQueryAsync();
                 }
             }

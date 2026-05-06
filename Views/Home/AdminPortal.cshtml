@@ -1,11 +1,7 @@
-﻿@{
-    ViewBag.Title = "Admin Portal";
-}
+﻿@model IEnumerable<CollegeMarketplaceMarch2026.Models.UserModel>
 
 <main aria-labelledby="title">
-
     <h3 class="mb-3">Users</h3>
-
     <div class="row fw-bold border-bottom pb-2 mb-2">
         <div class="col-1"></div>
         <div class="col-2 text-center">Full Name</div>
@@ -13,15 +9,33 @@
         <div class="col-3 text-center">Phone Number</div>
         <div class="col-1 text-center">Admin</div>
     </div>
+    @foreach (var user in Model)
+    {
+        <div class="row border rounded p-2 mb-2 d-flex align-items-center">
+            <div class="col-1">
+                <form method="post" action="@Url.Action("DeleteUser", "Home")" class="d-inline">
+                    <input type="hidden" name="id" value="@user.UserID" />
+                    <button type="submit" class="btn btn-danger ">🗑</button>
+                </form>
+            </div>
+            <div class="col-2 text-center">@user.FirstName @user.LastName</div>
+            <div class="col-3 text-center">@user.Email</div>
+            <div class="col-3 text-center">@user.PhoneNumber</div>
 
-    <div class="row border rounded p-2 mb-2 d-flex align-items-center">
-        <div class="col-1">
-            <button class="btn btn-danger btn-sm me-1">🗑</button>
-            <button class="btn btn-success btn-sm">✏</button>
+            <div class="col-1 text-center">
+                <form method="post" action="@Url.Action("AdminPortal", "Home")">
+                    <input type="hidden" name="userId" value="@user.UserID" />
+
+                    <input type="checkbox"
+                           name="isAdmin"
+                           value="true"
+                           @(user.IsAdmin ? "checked" : "")
+                           onchange="this.form.submit()" />
+
+                    <input type="hidden" name="isAdmin" value="false" />
+                </form>
+            </div>
         </div>
-        <div class="col-2 text-center">Jane Smith</div>
-        <div class="col-3 text-center">jsmith@email.com</div>
-        <div class="col-3 text-center">330-555-1222</div>
-        <div class="col-1 text-center"><input type="checkbox" /></div>
-    </div>
+    }
+    <hr />
 </main>
